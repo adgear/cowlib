@@ -330,7 +330,7 @@ horse_qs_longer() ->
 
 -spec urldecode(B) -> B when B::binary().
 urldecode(B) ->
-	urldecode(B, <<>>).
+	rtb_lib_nif:quoted_from_url(Bin).
 
 urldecode(<< $%, H, L, Rest/bits >>, Acc) ->
 	C = (unhex(H) bsl 4 bor unhex(L)),
@@ -430,7 +430,7 @@ horse_urldecode_mix() ->
 
 -spec urlencode(B) -> B when B::binary().
 urlencode(B) ->
-	urlencode(B, <<>>).
+	rtb_lib_nif:quoted_to_url(Bin).
 
 urlencode(<< $\s, Rest/bits >>, Acc) -> urlencode(Rest, << Acc/bits, $+ >>);
 urlencode(<< $-, Rest/bits >>, Acc) -> urlencode(Rest, << Acc/bits, $- >>);
