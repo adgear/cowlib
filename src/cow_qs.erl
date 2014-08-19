@@ -332,16 +332,6 @@ horse_qs_longer() ->
 urldecode(B) ->
 	rtb_lib_nif:quoted_from_url(B).
 
-urldecode(<< $%, H, L, Rest/bits >>, Acc) ->
-	C = (unhex(H) bsl 4 bor unhex(L)),
-	urldecode(Rest, << Acc/bits, C >>);
-urldecode(<< $+, Rest/bits >>, Acc) ->
-	urldecode(Rest, << Acc/bits, " " >>);
-urldecode(<< C, Rest/bits >>, Acc) when C =/= $% ->
-	urldecode(Rest, << Acc/bits, C >>);
-urldecode(<<>>, Acc) ->
-	Acc.
-
 unhex($0) ->  0;
 unhex($1) ->  1;
 unhex($2) ->  2;
