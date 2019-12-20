@@ -19,7 +19,8 @@
 
 -type cookie_option() :: {max_age, non_neg_integer()}
 	| {domain, binary()} | {path, binary()}
-	| {secure, boolean()} | {http_only, boolean()}.
+	| {secure, boolean()} | {http_only, boolean()}
+	| {same_site, lax | strict | none}.
 -type cookie_opts() :: [cookie_option()].
 -export_type([cookie_opts/0]).
 
@@ -203,8 +204,14 @@ setcookie(Name, Value, Opts) ->
 		false -> <<>>;
 		{_, true} -> <<"; HttpOnly">>
 	end,
+	SameSite = case lists:keyfind(same_site, 1, Opts) of
+		false -> <<>>;
+		{_, lax} -> <<"; SameSite=Lax">>;
+		{_, strict} -> <<"; SameSite=Strict">>;
+		{_, none} -> <<"; SameSite=None">>
+	end,
 	[Name, <<"=">>, Value, <<"; Version=1">>,
-		MaxAgeBin, DomainBin, PathBin, SecureBin, HttpOnlyBin].
+		MaxAgeBin, DomainBin, PathBin, SecureBin, HttpOnlyBin, SameSite].
 
 -ifdef(TEST).
 setcookie_test_() ->
